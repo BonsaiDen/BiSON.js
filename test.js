@@ -119,3 +119,7 @@ function runTests() {
     console.log('Final compare: ' + (bisonFinal == jsonFinal ? 'PASSED' : 'FAILED'));
 }
 
+if (typeof window === 'undefined') {
+    runTests();
+}
+
