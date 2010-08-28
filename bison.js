@@ -22,7 +22,6 @@
 
 (function() {
 var floor = Math.floor, round = Math.round, ceil = Math.ceil;
-var isArray = Array.isArray;
 var tok = [];
 for (var i = 0; i < 256; i++) {
     tok.push(String.fromCharCode(i));
@@ -107,7 +106,7 @@ function _encode(data) {
     
     // Objects / Arrays
     } else if (typeof data === 'object') {
-        if (isArray(data)) {
+        if (data instanceof Array) {
             enc += tok[8];
             for (var i = 0, l = data.length; i < l; i++) {
                 _encode(data[i]);
@@ -150,7 +149,7 @@ function decode(data) {
             var a = t === 8 ? [] : {};
             set = dict = t === 10;
             if (init) {
-                isArray(f) ? f.push(a) : f[k] = a;
+                f instanceof Array ? f.push(a) : f[k] = a;
             
             } else {
                 init = true;
@@ -160,13 +159,13 @@ function decode(data) {
         
         } else if (t === 11 || t === 9) {
             s.shift();
-            set = dict = !isArray(s[0]);
+            set = dict = !(s[0] instanceof Array);
         
         // Fixed
         } else if (t > 24) {
             t = t - 25;
             t = t > 112 ? (0 - t + 112) : t 
-            isArray(f) ? f.push(t) : f[k] = t;
+            f instanceof Array ? f.push(t) : f[k] = t;
             set = true;
         
         } else if (t > 0 && t < 7) {
@@ -189,7 +188,7 @@ function decode(data) {
                 p += 4;
             }
             value = t % 2 ? value : 0 - value
-            isArray(f) ? f.push(value) : f[k] = value;
+            f instanceof Array ? f.push(value) : f[k] = value;
             set = true;
         
         // Floats
@@ -223,17 +222,17 @@ function decode(data) {
                 p += 5;
             }
             m = t % 2 ? m + r * 0.01 : 0 - (m + r * 0.01);
-            isArray(f) ? f.push(m) : f[k] = m;
+            f instanceof Array ? f.push(m) : f[k] = m;
             set = true;
         
         // Booleans
         } else if (t > 18 && t < 21) {
-            isArray(f) ? f.push(t === 19) : f[k] = t === 19;
+            f instanceof Array ? f.push(t === 19) : f[k] = t === 19;
             set = true;
         
         // Null
         } else if (t === 0) {
-            isArray(f) ? f.push(null) : f[k] = null;
+            f instanceof Array ? f.push(null) : f[k] = null;
             set = true;
         
         // Strings
@@ -243,7 +242,7 @@ function decode(data) {
                 str += data.charAt(p++);
             }
             p++;
-            isArray(f) ? f.push(str) : f[k] = str;
+            f instanceof Array ? f.push(str) : f[k] = str;
             set = true;
         }
     }
