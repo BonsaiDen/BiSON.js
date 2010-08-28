@@ -13,12 +13,20 @@ for(var i = 0; i < 10; i++) {
 }
 
 function timeIt(foo) {
+    var time = 0;
+    for(var i = 0; i < 5; i++) {
+        time += timeMedian(foo);
+    }
+    return time / 5;
+}
+
+function timeMedian(foo) {
     for(var i = 0; i < 10; i++) {
         foo();
     }
     
     var times = [];
-    for(var e = 0; e < 15; e++) {
+    for(var e = 0; e < 10; e++) {
         var start = new Date().getTime();
         for(var i = 0; i < 200; i++) {
             foo();
@@ -43,11 +51,27 @@ function assertIt(id, input) {
     
     } else {
         console.log(id + ': FAILED!');
-        console.log('Expected: ' + JSON.stringify(input) + '\nGot:      ' + JSON.stringify(decoded) + '\n')
+        console.log('Expected: ' + JSON.stringify(input)
+                    + '\nGot:      ' + JSON.stringify(decoded) + '\n')
     }
 }
 
 function test() {
+    // Don't use console.log since Opera Dragonfly
+    // slows down the tests by a factor of 10(!)
+    // Also Firefox runs around 20% faster without Firebug enabled
+    if (typeof window !== 'undefined') {
+        console = {
+            'log': function() {
+                var e = '';
+                for(var i = 0; i < arguments.length; i++) {
+                    e += arguments[i] + ' ';
+                }
+                document.write(e + '<br/>');
+            }
+        };
+    }
+    
     // Fixed
     assertIt('Fixed byte', [-1, 1, 0, 2, -3, 4, -5, 6, -7, 255, -255, 112, -112, 113, -113]);
     assertIt('Fixed word', [-1000, 2000, -3000, 4000, -5000, 6000, -7000, 65535, -65535]);
@@ -76,6 +100,7 @@ function test() {
     // Encode
     console.log('BiSON encode:', timeIt(function(){BISON.encode(foo);}), 'ms');
     console.log('JSON stringify:', timeIt(function(){JSON.stringify(foo);}), 'ms');
+    console.log(' ');
     
     // Decode
     var bisonOut = BISON.encode(foo);
@@ -92,5 +117,5 @@ function test() {
     console.log(' ');
     console.log('Final compare: ' + (bisonFinal == jsonFinal ? 'PASSED' : 'FAILED'));
 }
-setTimeout(test, 250);
+setTimeout(test, 50);
 
