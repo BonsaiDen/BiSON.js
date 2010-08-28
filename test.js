@@ -57,7 +57,7 @@ function assertIt(id, input) {
     }
 }
 
-function test() {
+function runTests() {
     // Don't use console.log since Opera Dragonfly
     // slows down the tests by a factor of 10(!)
     // Also Firefox runs around 20% faster without Firebug enabled
@@ -118,5 +118,4 @@ function test() {
     console.log(' ');
     console.log('Final compare: ' + (bisonFinal == jsonFinal ? 'PASSED' : 'FAILED'));
 }
-setTimeout(test, 50);
 
