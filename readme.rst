@@ -19,7 +19,7 @@ Speed
 See for yourself by running `test.js` with node or open up `test.html` in a
 web browser of your choice.
 
-| **But I want dah test resultz *NAO(!)***
+| **But I want dah test resultz NAO(!)**
 | Okay...
 
 | **V8 under Node.js**
