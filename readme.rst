@@ -19,39 +19,39 @@ Speed
 See for yourself by running `test.js` with node or open up `test.html` in a
 web browser of your choice.
 
-**But I want dah test resultz *NAO(!)***  
-Okay...
+| **But I want dah test resultz *NAO(!)***
+| Okay...
 
-**V8 under Node.js**
-BiSON encode: 6 ms  
-JSON stringify: 22 ms  
+| **V8 under Node.js**
+| BiSON encode: 6ms
+| JSON stringify: 22ms
  
-BiSON decode: 8 ms  
-JSON parse: 22 ms  
+| BiSON decode: 8ms
+| JSON parse: 22ms
 
 
-**V8 under Chrome 6**
-BiSON encode: 6 ms  
-JSON stringify: 23 ms  
+| **V8 under Chrome 6**
+| BiSON encode: 6ms
+| JSON stringify: 23ms
 
-BiSON decode: 8 ms  
-JSON parse: 25 ms  
-
-
-**Firefox 4 Beta 4**
-BiSON encode: 65 ms  
-JSON stringify: 18 ms  
-
-BiSON decode: 21 ms  
-JSON parse: 19 ms  
+| BiSON decode: 8ms
+| JSON parse: 25ms 
 
 
-**Opera 10.61**
-BiSON encode: 30 ms  
-JSON stringify: 14 ms  
+| **Firefox 4 Beta 4**
+| BiSON encode: 65ms
+| JSON stringify: 18ms
 
-BiSON decode: 24 ms  
-JSON parse: 7 ms  
+| BiSON decode: 21ms
+| JSON parse: 19ms
+
+
+| **Opera 10.61**
+| BiSON encode: 30ms
+| JSON stringify: 14ms
+
+| BiSON decode: 24ms
+| JSON parse: 7ms
 
 
 License
