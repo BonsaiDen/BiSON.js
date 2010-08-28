@@ -13,11 +13,12 @@ for(var i = 0; i < 10; i++) {
 }
 
 function timeIt(foo) {
-    var time = 0;
+    var time = 1000000000;
     for(var i = 0; i < 5; i++) {
-        time += timeMedian(foo);
+        time = Math.min(timeMedian(foo), time);
+        
     }
-    return time / 5;
+    return time;
 }
 
 function timeMedian(foo) {
