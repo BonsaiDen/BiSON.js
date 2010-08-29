@@ -21,10 +21,10 @@
 */
 
 (function() {
-var floor = Math.floor, round = Math.round, ceil = Math.ceil;
+var floor = Math.floor, round = Math.round, ceil = Math.ceil, chr = String.fromCharCode;
 var tok = [];
 for (var i = 0; i < 256; i++) {
-    tok.push(String.fromCharCode(i));
+    tok.push(chr(i));
 }
 
 var enc = '';
@@ -32,9 +32,9 @@ function _encode(data) {
     if (typeof data === 'number') {
         
         // Floats
-        var add = 0;
-        if (floor(data) !== data) {
-            var m = data > 0 ? floor(data) : ceil(data);
+        var add = 0, f = floor(data);
+        if (f !== data) {
+            var m = data > 0 ? f : ceil(data);
             var r = round((data - m) * 100);
             if (m < 0 || r < 0) {
                 m = 0 - m;
@@ -135,12 +135,12 @@ function encode(data) {
 
 function decode(data) {
     var p = 0, l = data.length;
-    var s = [], d = [], f = null, t = 0, size = 0;
-    var dict = false, set = false, init = false;
-    var str = '', k ='';
+    var s = [], d = null, f = null, t = 0, size = 0, i = -1;
+    var dict = false, set = false;
+    var str = '', k ='', e = '';
     while (p < l) {
         t = data.charCodeAt(p++);
-        f = s[0];
+        f = s[i];
         
         // Keys
         if (dict && set && t > 24) {
@@ -150,20 +150,15 @@ function decode(data) {
         
         // Array / Objects
         } else if (t === 8 || t === 10) {
-            var a = t === 8 ? [] : {};
+            var a = t === 8 ? new Array() : new Object();
             set = dict = t === 10;
-            if (init) {
-                f instanceof Array ? f.push(a) : f[k] = a;
-            
-            } else {
-                init = true;
-                d.push(a);
-            }
-            s.unshift(a);
+            d !== null ? f instanceof Array ? f.push(a) : f[k] = a : d = a;
+            s.push(a);
+            i++;
         
         } else if (t === 11 || t === 9) {
-            s.shift();
-            set = dict = !(s[0] instanceof Array);
+            s.pop(i--);
+            set = dict = !(s[i] instanceof Array);
         
         // Fixed
         } else if (t > 24) {
@@ -248,15 +243,14 @@ function decode(data) {
         // Strings
         } else if (t === 7) {
             str = '';
-            while (data.charCodeAt(p) !== 0) {
-                str += data.charAt(p++);
+            while ((e = data.charCodeAt(p++)) !== 0) {
+                str += e <= 255 ? tok[e] : chr(e);
             }
-            p++;
             f instanceof Array ? f.push(str) : f[k] = str;
             set = true;
         }
     }
-    return d[0];
+    return d;
 }
 
 if (typeof window === 'undefined') {
