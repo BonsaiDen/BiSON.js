@@ -60,18 +60,21 @@ function _encode(data) {
                                      + tok[m >> 8 & 0xff]
                                      + tok[m & 0xff] + tok[r];
             
-            } else {
-                enc += tok[1 + add] + tok[0];
+            } else if (m === 2147483648) {
+                enc += tok[18] + tok[0] + tok[0] + tok[0] + tok[0] + tok[r];
             }
         
         // Fixed
         } else {
-            if (data < 0) {
-                data = 0 - data;   
+            if (data <= 0) {
+                data = 0 - data;
                 add = 1;
+            
+            } else {
+                data--;
             }
             
-            if (data < 113) {
+            if (data < 112) {
                 enc += tok[25 + data + add * 112];
             
             } else if (data < 256) {
@@ -115,9 +118,9 @@ function _encode(data) {
         
         } else {
             enc += tok[10];
-            for (var i in data) {
-                enc += tok[25 + i.length] + i;
-                _encode(data[i]);
+            for (var e in data) {
+                enc += tok[25 + e.length] + e;
+                _encode(data[e]);
             }
             enc += tok[11];
         }
@@ -132,11 +135,12 @@ function encode(data) {
 
 function decode(data) {
     var p = 0, l = data.length;
-    var s = [], d = [], f = null, t = 0;
+    var s = [], d = [], f = null, t = 0, size = 0;
     var dict = false, set = false, init = false;
     var str = '', k ='';
     while (p < l) {
-        t = data.charCodeAt(p++), f = s[0];
+        t = data.charCodeAt(p++);
+        f = s[0];
         
         // Keys
         if (dict && set && t > 24) {
@@ -164,12 +168,12 @@ function decode(data) {
         // Fixed
         } else if (t > 24) {
             t = t - 25;
-            t = t > 112 ? (0 - t + 112) : t 
+            t = t > 111 ? (0 - t + 112) : t + 1;
             f instanceof Array ? f.push(t) : f[k] = t;
             set = true;
         
         } else if (t > 0 && t < 7) {
-            var size = floor((t - 1) / 2);
+            size = floor((t - 1) / 2);
             var value = 0;
             if (size === 0) {
                 value = data.charCodeAt(p);
@@ -187,13 +191,13 @@ function decode(data) {
                 
                 p += 4;
             }
-            value = t % 2 ? value : 0 - value
+            value = t % 2 ? value + 1 : 0 - value;
             f instanceof Array ? f.push(value) : f[k] = value;
             set = true;
         
         // Floats
         } else if (t > 12 && t < 19) {
-            var size = floor((t - 1) / 2) - 6;
+            size = floor((t - 1) / 2) - 6;
             var m = 0, r = 0;
             if (size === 0) {
                 r = data.charCodeAt(p);
@@ -220,7 +224,13 @@ function decode(data) {
                 
                 r = data.charCodeAt(p + 4);
                 p += 5;
+                
+                if (m === 0) {
+                    m = 2147483648;
+                    t--;
+                }
             }
+            
             m = t % 2 ? m + r * 0.01 : 0 - (m + r * 0.01);
             f instanceof Array ? f.push(m) : f[k] = m;
             set = true;
@@ -254,7 +264,7 @@ if (typeof window === 'undefined') {
     exports.decode = decode;
 
 } else {
-    window.BISON = {
+    window['BISON'] = {
         'encode': encode,
         'decode': decode
     };
