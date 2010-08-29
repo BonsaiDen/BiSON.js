@@ -140,6 +140,10 @@ function runTests() {
         };
     }
     
+    console.log('== Timing All ==');
+    runTiming(foo, true);
+    console.log(' ');
+    
     // Fixed
     assertIt('Fixed byte', [-1, 1, 0, 2, -3, 4, -5, 6, -7, 255, -255, 112, -112, 113, -113]);
     assertIt('Fixed word', [-1000, 2000, -3000, 4000, -5000, 6000, -7000, 65535, -65535]);
@@ -182,9 +186,6 @@ function runTests() {
     
     console.log('== Timing Booleans ==');
     runTiming(bools);
-    
-    console.log('== Timing All ==');
-    runTiming(foo, true);
 }
 
 if (typeof window === 'undefined') {
