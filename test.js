@@ -12,6 +12,43 @@ for(var i = 0; i < 10; i++) {
     foo.push({'test': 'bla'});
 }
 
+var ints = [], floats = [], dicts = [], arrays = [], bools = [], strings = [];
+for(var i = 0; i < 30; i++) {
+    ints.push(0);
+    ints.push(1);
+    ints.push(-5);
+    ints.push(1000);
+    ints.push(-5000);
+    ints.push(1000000);
+    ints.push(-5000000);
+    
+    floats.push(0.24);
+    floats.push(1.12);
+    floats.push(-5.98);
+    floats.push(1000.45);
+    floats.push(-5000.37);
+    floats.push(1000000.12);
+    floats.push(-5000000.64);
+    
+    dicts.push({});
+    dicts.push({'a': {}, 'b': {}});
+    dicts.push({'c': {'f': {}}, 'd': {}});
+    
+    arrays.push([]);
+    arrays.push([[], [], []]);
+    arrays.push([[], [[], []], [[], []]]);
+    
+    bools.push(true);
+    bools.push(false);
+    bools.push(null);
+    
+    strings.push('Foo');
+    strings.push('Hello World');
+    strings.push('The cake is a lie...');
+    strings.push('Hey listen!');
+    
+}
+
 function timeIt(foo) {
     var time = 1000000000;
     for(var i = 0; i < 5; i++) {
@@ -57,6 +94,36 @@ function assertIt(id, input) {
     }
 }
 
+function runTiming(foo, json) {
+    // Encode
+    console.log('BiSON encode:', timeIt(function(){BISON.encode(foo);}), 'ms');
+    if (json) {
+        console.log('JSON stringify:', timeIt(function(){JSON.stringify(foo);}), 'ms');
+        console.log(' ');
+    }
+    
+    
+    // Decode
+    var bisonOut = BISON.encode(foo);
+    console.log('BiSON decode:', timeIt(function(){BISON.decode(bisonOut);}), 'ms');
+    
+    var jsonOut = JSON.stringify(foo);
+    if (json) {
+        console.log('JSON parse:', timeIt(function(){JSON.parse(jsonOut);}), 'ms');
+    }
+    
+    // Compare!
+    var bisonFinal = JSON.stringify(BISON.decode(bisonOut));
+    var jsonFinal = JSON.stringify(JSON.parse(jsonOut));
+    
+    // Size
+    console.log(' ');
+    if (json) {
+        console.log('Final compare: ' + (bisonFinal == jsonFinal ? 'PASSED' : 'FAILED'));
+    }
+}
+
+
 function runTests() {
     // Don't use console.log since Opera Dragonfly
     // slows down the tests by a factor of 10(!)
@@ -84,7 +151,7 @@ function runTests() {
     assertIt('Floats long', [-1000000.01, 2000000.2, -3000000.3, 4000000.4, -5000000.5, 6000000.6, -7000000.7, 2147483647.99, 2147483648.99, -2147483647.99]);
     
     // Strings
-    assertIt('Strings', ['', 'Test', 'Hello World', 'Foo123', 'ÜÖÄ']);
+    assertIt('Strings', ['', 'Test', 'Hello World', 'Foo123', '\u00c3\u0153\u00c3\u2013\u00c3\u201e']);
     
     // Booleans && Null
     assertIt('Boolean Null', [true, false, null]);
@@ -98,25 +165,26 @@ function runTests() {
     
     console.log(' ');
     
-    // Encode
-    console.log('BiSON encode:', timeIt(function(){BISON.encode(foo);}), 'ms');
-    console.log('JSON stringify:', timeIt(function(){JSON.stringify(foo);}), 'ms');
-    console.log(' ');
+    console.log('== Timing Integers ==');
+    runTiming(ints);
     
-    // Decode
-    var bisonOut = BISON.encode(foo);
-    console.log('BiSON decode:', timeIt(function(){BISON.decode(bisonOut);}), 'ms');
+    console.log('== Timing Floats ==');
+    runTiming(floats);
     
-    var jsonOut = JSON.stringify(foo);
-    console.log('JSON parse:', timeIt(function(){JSON.parse(jsonOut);}), 'ms');
+    console.log('== Timing Strings ==');
+    runTiming(strings);  
     
-    // Compare!
-    var bisonFinal = JSON.stringify(BISON.decode(bisonOut));
-    var jsonFinal = JSON.stringify(JSON.parse(jsonOut));
+    console.log('== Timing Arrays ==');
+    runTiming(arrays);
     
-    // Size
-    console.log(' ');
-    console.log('Final compare: ' + (bisonFinal == jsonFinal ? 'PASSED' : 'FAILED'));
+    console.log('== Timing Objects ==');
+    runTiming(dicts);
+    
+    console.log('== Timing Booleans ==');
+    runTiming(bools);
+    
+    console.log('== Timing All ==');
+    runTiming(foo, true);
 }
 
 if (typeof window === 'undefined') {
