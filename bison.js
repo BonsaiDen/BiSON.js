@@ -243,7 +243,7 @@ function decode(data) {
         // Strings
         } else if (t === 7) {
             str = '';
-            while ((e = data.charCodeAt(p++)) !== 0) {
+            while (p < l && (e = data.charCodeAt(p++)) !== 0) {
                 str += e <= 255 ? tok[e] : chr(e);
             }
             f instanceof Array ? f.push(str) : f[k] = str;
