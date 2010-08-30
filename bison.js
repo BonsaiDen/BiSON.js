@@ -135,9 +135,9 @@ function encode(data) {
 
 function decode(data) {
     var p = 0, l = data.length;
-    var s = [], d = undefined, f = null, t = 0, size = 0, i = -1;
+    var s = [], d = undefined, f = null, t = 0, i = -1;
     var dict = false, set = false;
-    var str = '', k ='', e = '';
+    var str = '', k = '', e = null, r = 0;
     while (p < l) {
         t = data.charCodeAt(p++);
         f = s[i];
@@ -150,10 +150,10 @@ function decode(data) {
         
         // Array / Objects
         } else if (t === 8 || t === 10) {
-            var a = t === 8 ? new Array() : new Object();
+            e = t === 8 ? new Array() : new Object();
             set = dict = t === 10;
-            d !== undefined ? f instanceof Array ? f.push(a) : f[k] = a : d = a;
-            s.push(a);
+            d !== undefined ? f instanceof Array ? f.push(e) : f[k] = e : d = e;
+            s.push(e);
             i++;
         
         } else if (t === 11 || t === 9) {
@@ -168,51 +168,50 @@ function decode(data) {
             set = true;
         
         } else if (t > 0 && t < 7) {
-            size = floor((t - 1) / 2);
-            var value = 0;
-            if (size === 0) {
-                value = data.charCodeAt(p);
+            r = floor((t - 1) / 2);
+            e = 0;
+            if (r === 0) {
+                e = data.charCodeAt(p);
                 p++;
             
-            } else if (size === 1) {
-                value = (data.charCodeAt(p) << 8) + data.charCodeAt(p + 1);
+            } else if (r === 1) {
+                e = (data.charCodeAt(p) << 8) + data.charCodeAt(p + 1);
                 p += 2;
             
-            } else if (size === 2) {
-                value = (data.charCodeAt(p) << 24)
+            } else if (r === 2) {
+                e = (data.charCodeAt(p) << 24)
                         + (data.charCodeAt(p + 1) << 16)
                         + (data.charCodeAt(p + 2) << 8)
                         + data.charCodeAt(p + 3);
                 
                 p += 4;
             }
-            value = t % 2 ? value + 1 : 0 - value;
-            f instanceof Array ? f.push(value) : f[k] = value;
+            e = t % 2 ? e + 1 : 0 - e;
+            f instanceof Array ? f.push(e) : f[k] = e;
             set = true;
         
         // Floats
         } else if (t > 12 && t < 19) {
-            size = floor((t - 1) / 2) - 6;
-            var m = 0, r = 0;
-            if (size === 0) {
+            r = floor((t - 1) / 2) - 6;
+            if (r === 0) {
                 r = data.charCodeAt(p);
                 if (r > 127) {
-                    m = 0;
+                    e = 0;
                     r -= 128;
                     p++;
                 
                 } else {
-                    m = data.charCodeAt(p + 1);
+                    e = data.charCodeAt(p + 1);
                     p += 2;
                 }
             
-            } else if (size === 1) {
-                m = (data.charCodeAt(p) << 8) + data.charCodeAt(p + 1);
+            } else if (r === 1) {
+                e = (data.charCodeAt(p) << 8) + data.charCodeAt(p + 1);
                 r = data.charCodeAt(p + 2);
                 p += 3;
             
-            } else if (size === 2) {
-                m = (data.charCodeAt(p) << 24)
+            } else if (r === 2) {
+                e = (data.charCodeAt(p) << 24)
                     + (data.charCodeAt(p + 1) << 16)
                     + (data.charCodeAt(p + 2) << 8)
                     + data.charCodeAt(p + 3);
@@ -220,14 +219,14 @@ function decode(data) {
                 r = data.charCodeAt(p + 4);
                 p += 5;
                 
-                if (m === 0) {
-                    m = 2147483648;
+                if (e === 0) {
+                    e = 2147483648;
                     t--;
                 }
             }
             
-            m = t % 2 ? m + r * 0.01 : 0 - (m + r * 0.01);
-            f instanceof Array ? f.push(m) : f[k] = m;
+            e = t % 2 ? e + r * 0.01 : 0 - (e + r * 0.01);
+            f instanceof Array ? f.push(e) : f[k] = e;
             set = true;
         
         // Booleans
