@@ -20,7 +20,7 @@
   
 */
 
-(function() {
+(function(undefined) {
 var floor = Math.floor, round = Math.round, ceil = Math.ceil, chr = String.fromCharCode;
 var tok = [];
 for (var i = 0; i < 256; i++) {
@@ -135,7 +135,7 @@ function encode(data) {
 
 function decode(data) {
     var p = 0, l = data.length;
-    var s = [], d = null, f = null, t = 0, size = 0, i = -1;
+    var s = [], d = undefined, f = null, t = 0, size = 0, i = -1;
     var dict = false, set = false;
     var str = '', k ='', e = '';
     while (p < l) {
@@ -152,7 +152,7 @@ function decode(data) {
         } else if (t === 8 || t === 10) {
             var a = t === 8 ? new Array() : new Object();
             set = dict = t === 10;
-            d !== null ? f instanceof Array ? f.push(a) : f[k] = a : d = a;
+            d !== undefined ? f instanceof Array ? f.push(a) : f[k] = a : d = a;
             s.push(a);
             i++;
         
