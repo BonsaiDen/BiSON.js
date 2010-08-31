@@ -6,7 +6,7 @@ BiSON.js
 **BiSON.js** makes some tradeoffs in order to archive a very small size of the 
 data.
 
-- Floating points numbers are limited to **2 digits of precision**
+- Floating point precision is limited to **2 decimal places**
 - There is no **NaN** or **Infinite**
 - Strings can't contain **0x00**
 - Just like in JSON **undefined** gets ignored
@@ -30,7 +30,7 @@ web browser of your choice.
 | JSON parse: 22ms
 
 
-| **Firefox 4 Jägermonkey Nightly**
+| **Firefox 4 Jägermonkey**
 | BiSON encode: 32 ms
 | JSON stringify: 17 ms
 
