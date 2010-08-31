@@ -22,28 +22,20 @@ web browser of your choice.
 | **But I want dah test resultz NAO(!)**
 | Okay...
 
-| **V8 under Node.js**
+| **V8 under Chrome6 / Node.js**
 | BiSON encode: 6ms
 | JSON stringify: 22ms
  
-| BiSON decode: 8ms
+| BiSON decode: 6ms
 | JSON parse: 22ms
 
 
-| **V8 under Chrome 6**
-| BiSON encode: 6ms
-| JSON stringify: 23ms
+| **Firefox 4 Jägermonkey Nightly**
+| BiSON encode: 32 ms
+| JSON stringify: 17 ms
 
-| BiSON decode: 8ms
-| JSON parse: 25ms 
-
-
-| **Firefox 4 Beta 4**
-| BiSON encode: 65ms
-| JSON stringify: 18ms
-
-| BiSON decode: 21ms
-| JSON parse: 19ms
+| BiSON decode: 20 ms
+| JSON parse: 18 ms
 
 
 | **Opera 10.61**
