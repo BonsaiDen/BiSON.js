@@ -157,8 +157,8 @@ function decode(data) {
             i++;
         
         } else if (t === 11 || t === 9) {
-            s.pop(i--);
-            set = dict = !(s[i] instanceof Array);
+            s.pop();
+            set = dict = !(s[--i] instanceof Array);
         
         // Fixed
         } else if (t > 24) {
