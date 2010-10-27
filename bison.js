@@ -21,22 +21,32 @@
 */
 
 (function(undefined) {
-var floor = Math.floor, round = Math.round, ceil = Math.ceil, chr = String.fromCharCode;
+var chr = String.fromCharCode;
 var tok = [];
 for (var i = 0; i < 256; i++) {
     tok.push(chr(i));
 }
 
+function round(data) {
+    if (data < 0) {
+        var l = (data + 1 | 0) - data;
+        return (l >= 1.0 && l <= 1.5) ? data | 0 : data - 1 | 0;
+    }
+    
+    var l = data | 0;
+    return data - l >= 0.5 ? data + 1 | 0 : l;
+}
+
 var enc = '';
 function _encode(data) {
-    if (typeof data === 'number') {
+    if (typeof data === 'number' && data < 2147483648) {
         
         // Floats
-        var add = 0, f = floor(data);
+        var add = 0, f = data >= 0 ? data | 0 : data - 1 | 0;
         if (f !== data) {
-            var m = data > 0 ? f : ceil(data);
+            var m = data > 0 ? f : data | 0;
             var r = round((data - m) * 100);
-            if (m < 0 || r < 0) {
+            if (data < 0) {
                 m = 0 - m;
                 r = 0 - r;
                 add = 1;
@@ -54,14 +64,11 @@ function _encode(data) {
                 enc += tok[15 + add] + tok[m >> 8 & 0xff]
                                      + tok[m & 0xff] + tok[r];
             
-            } else if (m < 2147483648) {
+            } else {
                 enc += tok[17 + add] + tok[m >> 24 & 0xff]
                                      + tok[m >> 16 & 0xff]
                                      + tok[m >> 8 & 0xff]
                                      + tok[m & 0xff] + tok[r];
-            
-            } else if (m === 2147483648) {
-                enc += tok[18] + tok[0] + tok[0] + tok[0] + tok[0] + tok[r];
             }
         
         // Fixed
@@ -84,20 +91,23 @@ function _encode(data) {
                 enc += tok[3 + add] + tok[data >> 8 & 0xff]
                                     + tok[data & 0xff];
             
-            } else if (data < 2147483648) {
+            } else {
                 enc += tok[5 + add] + tok[data >> 24 & 0xff]
                                     + tok[data >> 16 & 0xff]
                                     + tok[data >> 8 & 0xff]
                                     + tok[data & 0xff];
-            
-            } else {
-                enc += tok[1 + add] + tok[0];
             }
         }
     
     // Strings
     } else if (typeof data === 'string') {
-        enc += tok[7] + data + tok[0];
+        var l = data.length;
+        enc += tok[7];
+        while (l >= 255) {
+            l -= 255;
+            enc += tok[255];
+        }
+        enc += tok[l] + data;
     
     // Booleans
     } else if (typeof data === 'boolean') {
@@ -137,7 +147,7 @@ function decode(data) {
     var p = 0, l = data.length;
     var s = [], d = undefined, f = null, t = 0, i = -1;
     var dict = false, set = false;
-    var str = '', k = '', e = null, r = 0;
+    var k = '', e = null, r = 0;
     while (p < l) {
         t = data.charCodeAt(p++);
         f = s[i];
@@ -168,7 +178,7 @@ function decode(data) {
             set = true;
         
         } else if (t > 0 && t < 7) {
-            r = floor((t - 1) / 2);
+            r = ((t - 1) / 2) | 0;
             e = 0;
             if (r === 0) {
                 e = data.charCodeAt(p);
@@ -192,7 +202,7 @@ function decode(data) {
         
         // Floats
         } else if (t > 12 && t < 19) {
-            r = floor((t - 1) / 2) - 6;
+            r = (((t - 1) / 2) - 6) | 0;
             if (r === 0) {
                 r = data.charCodeAt(p);
                 if (r > 127) {
@@ -218,11 +228,6 @@ function decode(data) {
                 
                 r = data.charCodeAt(p + 4);
                 p += 5;
-                
-                if (e === 0) {
-                    e = 2147483648;
-                    t--;
-                }
             }
             
             e = t % 2 ? e + r * 0.01 : 0 - (e + r * 0.01);
@@ -241,11 +246,14 @@ function decode(data) {
         
         // Strings
         } else if (t === 7) {
-            str = '';
-            while (p < l && (e = data.charCodeAt(p++)) !== 0) {
-                str += e <= 255 ? tok[e] : chr(e);
+            r = 0;
+            while (data.charCodeAt(p) === 255) {
+                r += 255;
+                p++;
             }
-            f instanceof Array ? f.push(str) : f[k] = str;
+            r += data.charCodeAt(p++);
+            f instanceof Array ? f.push(data.substr(p, r)) : f[k] = data.substr(p, r);
+            p += r;
             set = true;
         }
     }
