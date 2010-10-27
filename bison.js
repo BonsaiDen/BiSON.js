@@ -103,11 +103,11 @@ function _encode(data) {
     } else if (typeof data === 'string') {
         var l = data.length;
         enc += tok[7];
-        while (l >= 255) {
-            l -= 255;
-            enc += tok[255];
+        while (l >= 32768) {
+            l -= 32768;
+            enc += chr(32768);
         }
-        enc += tok[l] + data;
+        enc += chr(l) + data;
     
     // Booleans
     } else if (typeof data === 'boolean') {
@@ -247,8 +247,8 @@ function decode(data) {
         // Strings
         } else if (t === 7) {
             r = 0;
-            while (data.charCodeAt(p) === 255) {
-                r += 255;
+            while (data.charCodeAt(p) === 32768) {
+                r += 32768;
                 p++;
             }
             r += data.charCodeAt(p++);
