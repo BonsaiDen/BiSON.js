@@ -3,12 +3,11 @@ BiSON.js
 
 **BiSON.js** is size optimized binary encoding for JavaScript objects.
 
-**BiSON.js** makes some tradeoffs in order to archive a very small size of the 
-data.
+**BiSON.js** makes some trade offs in order to archive a very small size of the encoded data.
 
+- Number range is limited to **-2147483647** to **2147483647** (inclusive)
 - Floating point precision is limited to **2 decimal places**
 - There is no **NaN** or **Infinite**
-- Strings can't contain **0x00**
 - Just like in JSON **undefined** gets ignored
 - Object keys are limited to **230 characters**
 
@@ -16,35 +15,9 @@ data.
 Speed
 =====
 
-See for yourself by running `test.js` with node or open up `test.html` in a
-web browser of your choice.
+See for yourself by running ``node bench.js`` or open up ``bench.html`` in a Browser of your choice.
 
-| **But I want dah test resultz NAO(!)**
-| Okay...
-
-| **V8 under Chrome6 / Node.js**
-| BiSON encode: 6ms
-| JSON stringify: 22ms
- 
-| BiSON decode: 6ms
-| JSON parse: 22ms
-
-
-| **Firefox 4 Jägermonkey**
-| BiSON encode: 32 ms
-| JSON stringify: 17 ms
-
-| BiSON decode: 20 ms
-| JSON parse: 18 ms
-
-
-| **Opera 10.61**
-| BiSON encode: 30ms
-| JSON stringify: 14ms
-
-| BiSON decode: 24ms
-| JSON parse: 7ms
-
+In general it's twice as fast as JSON under V8 and just as fast as JSON in Firefox 4 Beta.
 
 License
 =======
