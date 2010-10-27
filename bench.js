@@ -51,7 +51,7 @@ for(var i = 0; i < 30; i++) {
 }
 
 if (!BISON) {
-    var BISON = require(__dirname + '/bisonOpt');
+    var BISON = require(__dirname + '/bison');
 }
 
 
