@@ -1,23 +1,36 @@
 BiSON.js
 ========
 
-**BiSON.js** is size optimized binary encoding for JavaScript objects.
+**BiSON** is size optimized binary encoding for JavaScript objects, it was designed for real time web games and other applications that might be bandwidth limited.
 
-**BiSON.js** makes some trade offs in order to archive a very small size of the encoded data.
+BiSON **saves** between **20 to 45 percent** of size when compared to JSON. With the average **saving** being around **one third**.
 
-- Number range is limited to **-2147483647** to **2147483647** (inclusive)
-- Floating point precision is limited to **2 decimal places**
-- There is no **NaN** or **Infinite**
-- Just like in JSON **undefined** gets ignored
-- Object keys are limited to **230 characters**
+In order to archive a very small size of the encoded data some trade offs were made, therefore, BiSON is not 100% compatible with JSON.
+
+Valid BiSON
+-----------
+
+- **true**, **false**, **null**
+- Any Number between **-2147483647.99** and **2147483647.99** (inclusive) 
+
+ - **Note:** Floats are rounded to 2 decimal places
+
+- **Object** and **Arrays** of any size and nesting depth
+- **Strings** of any length
+
+Just like with JSON, all data needs to be encapsulated in a top level **Array** or **Object**.
+
+**Important:** For reasons of speed, **BiSON** does **not** perform any validation on the data you pass it.
+Therefore passing for example Numbers that are not in range will result in malformed output.
 
 
 Speed
-=====
+-----
 
-See for yourself by running ``node bench.js`` or open up ``bench.html`` in a Browser of your choice.
+See for yourself by opening up ``bench.html`` in a Browser or by running ``node bench.js``.
 
-In general it's twice as fast as JSON under V8 and just as fast as JSON in Firefox 4 Beta.
+Depending on the input, BiSON under V8 is between **2 to 5 times faster** than native JSON and **just as fast as JSON** in Firefox 4 Beta.
+
 
 License
 =======
