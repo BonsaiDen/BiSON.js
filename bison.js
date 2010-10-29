@@ -28,7 +28,7 @@ for (var i = 0; i < 65536; i++) {
 }
 
 var enc = '';
-function _encode(data) {
+function _encode(data, top) {
     if (typeof data === 'number' && data < 2147483648) {
         
         // Floats
@@ -109,24 +109,28 @@ function _encode(data) {
     } else if (data instanceof Array) {
         enc += tok[8];
         for (var i = 0, l = data.length; i < l; i++) {
-            _encode(data[i]);
+            _encode(data[i], false);
         }
-        enc += tok[9];
+        if (!top) {
+            enc += tok[9];
+        }
     
     // Objects
     } else if (typeof data === 'object') {
         enc += tok[10];
         for (var e in data) {
             enc += tok[17 + e.length] + e;
-            _encode(data[e]);
+            _encode(data[e], false);
         }
-        enc += tok[11];
+        if (!top) {
+            enc += tok[11];
+        }
     }
 }
 
 function encode(data) {
     enc = '';
-    _encode(data);
+    _encode(data, true);
     return enc;
 }
 
