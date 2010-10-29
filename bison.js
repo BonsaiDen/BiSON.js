@@ -22,19 +22,9 @@
 
 (function(undefined) {
 var chr = String.fromCharCode;
-var tok = [];
-for (var i = 0; i < 256; i++) {
-    tok.push(chr(i));
-}
-
-function round(data) {
-    if (data < 0) {
-        var l = (data + 1 | 0) - data;
-        return (l >= 1.0 && l <= 1.5) ? data | 0 : data - 1 | 0;
-    }
-    
-    var l = data | 0;
-    return data - l >= 0.5 ? data + 1 | 0 : l;
+var tok = new Array(65536);
+for (var i = 0; i < 65536; i++) {
+    tok[i] = chr(i);
 }
 
 var enc = '';
@@ -42,17 +32,26 @@ function _encode(data) {
     if (typeof data === 'number' && data < 2147483648) {
         
         // Floats
-        var add = 0, f = data >= 0 ? data | 0 : data - 1 | 0;
-        if (f !== data) {
-            var m = data > 0 ? f : data | 0;
-            var r = round((data - m) * 100);
+        var m = data | 0;
+        if (m !== data) {
+            var add = 0, r = (data - m) * 100;
+            if (r < 0) {
+                add = (r + 1 | 0) - r;
+                r = (add >= 1.0 && add <= 1.5) ? r | 0 : r - 1 | 0;
+            
+            } else {
+                add = r | 0;
+                r = r - add >= 0.5 ? r + 1 | 0 : add;
+            }
+            
+            add = 0;
             if (data < 0) {
                 m = 0 - m;
                 r = 0 - r;
                 add = 1;
             }
             
-            if (m < 256) {
+            if (m < 65536) {
                 if (m === 0) {
                     enc += tok[13 + add] + tok[r + 128];
                 
@@ -60,19 +59,14 @@ function _encode(data) {
                     enc += tok[13 + add] + tok[r] + tok[m];
                 }
             
-            } else if (m < 65536) {
-                enc += tok[15 + add] + tok[m >> 8 & 0xff]
-                                     + tok[m & 0xff] + tok[r];
-            
             } else {
-                enc += tok[17 + add] + tok[m >> 24 & 0xff]
-                                     + tok[m >> 16 & 0xff]
-                                     + tok[m >> 8 & 0xff]
-                                     + tok[m & 0xff] + tok[r];
+                enc += tok[15 + add] + tok[m >> 16 & 0xffff]
+                                     + tok[m & 0xffff] + tok[r];
             }
         
         // Fixed
         } else {
+            var add = 0;
             if (data <= 0) {
                 data = 0 - data;
                 add = 1;
@@ -81,21 +75,15 @@ function _encode(data) {
                 data--;
             }
             
-            if (data < 112) {
-                enc += tok[25 + data + add * 112];
-            
-            } else if (data < 256) {
-                enc += tok[1 + add] + tok[data];
+            if (data < 116) {
+                enc += tok[17 + data + add * 116];
             
             } else if (data < 65536) {
-                enc += tok[3 + add] + tok[data >> 8 & 0xff]
-                                    + tok[data & 0xff];
+                enc += tok[1 + add] + tok[data];
             
             } else {
-                enc += tok[5 + add] + tok[data >> 24 & 0xff]
-                                    + tok[data >> 16 & 0xff]
-                                    + tok[data >> 8 & 0xff]
-                                    + tok[data & 0xff];
+                enc += tok[3 + add] + tok[data >> 16 & 0xffff]
+                                    + tok[data & 0xffff];
             }
         }
     
@@ -103,37 +91,36 @@ function _encode(data) {
     } else if (typeof data === 'string') {
         var l = data.length;
         enc += tok[7];
-        while (l >= 32768) {
-            l -= 32768;
-            enc += chr(32768);
+        while (l >= 65535) {
+            l -= 65535;
+            enc += tok[65535];
         }
-        enc += chr(l) + data;
+        enc += tok[l] + data;
     
     // Booleans
     } else if (typeof data === 'boolean') {
-        enc += tok[data ? 19 : 20];
+        enc += tok[data ? 5 : 6];
     
     // Null
     } else if (data === null) {
         enc += tok[0];
     
-    // Objects / Arrays
-    } else if (typeof data === 'object') {
-        if (data instanceof Array) {
-            enc += tok[8];
-            for (var i = 0, l = data.length; i < l; i++) {
-                _encode(data[i]);
-            }
-            enc += tok[9];
-        
-        } else {
-            enc += tok[10];
-            for (var e in data) {
-                enc += tok[25 + e.length] + e;
-                _encode(data[e]);
-            }
-            enc += tok[11];
+    // Arrays
+    } else if (data instanceof Array) {
+        enc += tok[8];
+        for (var i = 0, l = data.length; i < l; i++) {
+            _encode(data[i]);
         }
+        enc += tok[9];
+    
+    // Objects
+    } else if (typeof data === 'object') {
+        enc += tok[10];
+        for (var e in data) {
+            enc += tok[17 + e.length] + e;
+            _encode(data[e]);
+        }
+        enc += tok[11];
     }
 }
 
@@ -153,9 +140,9 @@ function decode(data) {
         f = s[i];
         
         // Keys
-        if (dict && set && t > 24) {
-            k = data.substring(p, p + t - 25);
-            p += t - 25;
+        if (dict && set && t > 16) {
+            k = data.substring(p, p + t - 17);
+            p += t - 17;
             set = false;
         
         // Array / Objects
@@ -171,39 +158,29 @@ function decode(data) {
             set = dict = !(s[--i] instanceof Array);
         
         // Fixed
-        } else if (t > 24) {
-            t = t - 25;
-            t = t > 111 ? (0 - t + 112) : t + 1;
+        } else if (t > 16) {
+            t = t - 17;
+            t = t > 115 ? (0 - t + 116) : t + 1;
             f instanceof Array ? f.push(t) : f[k] = t;
             set = true;
         
-        } else if (t > 0 && t < 7) {
-            r = ((t - 1) / 2) | 0;
+        } else if (t > 0 && t < 5) {
             e = 0;
-            if (r === 0) {
+            if (((t - 1) / 2 | 0) === 0) {
                 e = data.charCodeAt(p);
                 p++;
             
-            } else if (r === 1) {
-                e = (data.charCodeAt(p) << 8) + data.charCodeAt(p + 1);
+            } else {
+                e = (data.charCodeAt(p) << 16) + data.charCodeAt(p + 1);
                 p += 2;
-            
-            } else if (r === 2) {
-                e = (data.charCodeAt(p) << 24)
-                        + (data.charCodeAt(p + 1) << 16)
-                        + (data.charCodeAt(p + 2) << 8)
-                        + data.charCodeAt(p + 3);
-                
-                p += 4;
             }
             e = t % 2 ? e + 1 : 0 - e;
             f instanceof Array ? f.push(e) : f[k] = e;
             set = true;
         
         // Floats
-        } else if (t > 12 && t < 19) {
-            r = (((t - 1) / 2) - 6) | 0;
-            if (r === 0) {
+        } else if (t > 12 && t < 17) {
+            if (((t - 13) / 2 | 0) === 0) {
                 r = data.charCodeAt(p);
                 if (r > 127) {
                     e = 0;
@@ -215,19 +192,10 @@ function decode(data) {
                     p += 2;
                 }
             
-            } else if (r === 1) {
-                e = (data.charCodeAt(p) << 8) + data.charCodeAt(p + 1);
+            } else {
+                e = (data.charCodeAt(p) << 16) + data.charCodeAt(p + 1);
                 r = data.charCodeAt(p + 2);
                 p += 3;
-            
-            } else if (r === 2) {
-                e = (data.charCodeAt(p) << 24)
-                    + (data.charCodeAt(p + 1) << 16)
-                    + (data.charCodeAt(p + 2) << 8)
-                    + data.charCodeAt(p + 3);
-                
-                r = data.charCodeAt(p + 4);
-                p += 5;
             }
             
             e = t % 2 ? e + r * 0.01 : 0 - (e + r * 0.01);
@@ -235,8 +203,8 @@ function decode(data) {
             set = true;
         
         // Booleans
-        } else if (t > 18 && t < 21) {
-            f instanceof Array ? f.push(t === 19) : f[k] = t === 19;
+        } else if (t > 4 && t < 7) {
+            f instanceof Array ? f.push(t === 5) : f[k] = t === 5;
             set = true;
         
         // Null
@@ -247,8 +215,8 @@ function decode(data) {
         // Strings
         } else if (t === 7) {
             r = 0;
-            while (data.charCodeAt(p) === 32768) {
-                r += 32768;
+            while (data.charCodeAt(p) === 65535) {
+                r += 65535;
                 p++;
             }
             r += data.charCodeAt(p++);
