@@ -29,7 +29,7 @@ for (var i = 0; i < 65536; i++) {
 
 var enc = '';
 function _encode(data, top) {
-    if (typeof data === 'number' && data < 2147483648) {
+    if (typeof data === 'number') {
         
         // Floats
         var m = data | 0;
