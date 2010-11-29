@@ -54,7 +54,7 @@ function runTests() {
     assertIt('Arrays', [[2, 3, [8, [8, [8, 9], 9], 9]], [4, 5], [6, 7, [8, 9]], [1, 2]]);
     
     // Objects
-    assertIt('Objects', {'Test': 'foo', 'd': 9, 'Bla': [123, 'test'], 'uff': 1.2,
+    assertIt('Objects', {'TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTes255': 'foo', 'd': 9, 'Bla': [123, 'test'], 'uff': 1.2,
                          'dict': {'a': {'a': [1, 2], 'b': 1, 'o': {'l': 1.2, 'p': [2.9]}}}});
 }
 
