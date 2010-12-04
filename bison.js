@@ -98,8 +98,11 @@ function _encode(data, top) {
         enc += tok[l] + data;
     
     // Booleans
-    } else if (typeof data === 'boolean') {
-        enc += tok[data ? 5 : 6];
+    } else if (data === true) {
+        enc += tok[5];
+    
+    } else if (data === false) {
+        enc += tok[6];
     
     // Null
     } else if (data === null) {
@@ -116,7 +119,7 @@ function _encode(data, top) {
         }
     
     // Objects
-    } else if (typeof data === 'object') {
+    } else if (data instanceof Object) {
         enc += tok[10];
         for (var e in data) {
             enc += tok[17 + e.length] + e;
