@@ -1,5 +1,5 @@
-BiSON.js
-========
+BiSON.js - Binary Encoding for JavaScript
+-----------------------------------------
 
 **BiSON** is size optimized binary encoding for JavaScript objects, it was 
 designed for real time web games and other applications that might be bandwidth 
@@ -9,8 +9,7 @@ limited.
 
 BiSON **saves** between **20 to 45 percent** of size when compared to JSON. With 
 the average saving being around **one third**.
-
-In order to achieve a the maximum compression BiSON makes some trade offs, 
+In order to achieve a maximum of compression BiSON makes some trade offs, 
 therefore it is not 100% compatible with JSON.
 
 ### Valid BiSON
@@ -27,7 +26,6 @@ Just like with JSON, all data needs to be encapsulated in a top level **Array** 
 
 > **Important:** For reasons of speed, **BiSON** does **not** perform any validation on the data you pass it.
 > Therefore passing for example Numbers that are not in range will result in malformed output.
-
 
 ### Speed
 
