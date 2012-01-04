@@ -1,20 +1,22 @@
 {
+
     "name": "bison",
-    "version": "1.1.0",
-    "description": "Size optimized binary encoding for JavaScript.",
+    "version": "2.0.0",
+    "description": "Bandwidth optimized binary encoding for JavaScript.",
     "homepage": "https://github.com/BonsaiDen/BiSON.js",
     "author": "Ivo Wetzel <ivo.wetzel@googlemail.com>",
 
     "keywords": [
         "encoder",
-        "binary",
+        "binary"
     ],
     
     "engines" : {
-        "node": ">=0.1.9"
+        "node": "0.4 || 0.5 || 0.6",
+        "npm": "1"
     },
     
-    "main": "bison",
+    "main": "lib/bison",
     
     "repository": {
         "type" : "git",
@@ -25,4 +27,5 @@
         "type": "MIT",
         "url": "http://github.com/BonsaiDen/BiSON.js/raw/master/LICENSE"
     }]
+
 }

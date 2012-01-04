@@ -1,37 +1,44 @@
-BiSON.js - Binary Encoding for JavaScript
------------------------------------------
+BiSON - Binary Encoding for JavaScript - Saving your Bandwidth
+==============================================================
 
-**BiSON** is size optimized binary encoding for JavaScript objects, it was 
-designed for real time web games and other applications that might be bandwidth 
-limited.
+**BiSON** provides a JSON like encoding for your JavaScript objects but is highly
+focussed on providing a format that is optimized for use with WebSockets and other 
+applications where bandwidth is a major concern.
 
-### Output Size
+
+# Usage
+
+The Library exports a `encode` and a `decode` method on either the global `BISON` 
+object in the Browser or on the module when used under Node.js.
+
+    // Encoding and decoding
+    BISON.decode(BISON.encode({ key: 'value' })) // { key: 'value' }
+
+
+# Details
 
 BiSON **saves** between **20 to 45 percent** of size when compared to JSON. With 
 the average saving being around **one third**.
 In order to achieve a maximum of compression BiSON makes some trade offs, 
 therefore it is not 100% compatible with JSON.
 
-### Valid BiSON
+## Encoding Limits
 
-- **true**, **false**, **null**
-- Any Number between **-2147483647.99** and **2147483647.99** (inclusive) 
-
-> **Note:** Floats are rounded to 2 decimal places
-
-- **Object** and **Arrays** of any size and nesting depth
-- **Strings** of any length
+- No **undefined** (like in JSON)
+- Floats are single precision
+- Integers are limited to 32 bits
 
 Just like with JSON, all data needs to be encapsulated in a top level **Array** or **Object**.
 
 > **Important:** For reasons of speed, **BiSON** does **not** perform any validation on the data you pass it.
-> Therefore passing for example Numbers that are not in range will result in malformed output.
+> For example: Passing Numbers that are not in range will result in invalid output and result in infinite loops in the worst case.
 
-### Speed
+## Speed
 
-Depending on the input, BiSON under V8 is between 2 to 5 times **faster** than 
-native JSON and **just as fast** as JSON in Firefox 4 Beta.
+Fast. Trust me.
 
-For more detailed results visit the 
-[JSPerf Benchmark](http://jsperf.com/bison/6).
+
+# Tests
+
+The tests can be run with `nodeunit` or in a browser of your choice.
 
