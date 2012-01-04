@@ -199,6 +199,21 @@ var tests = nodeunit.testCase({
     'Object': function(test) {
 
         code(test, {
+            a: 1,
+            b: 2,
+            c: 3,
+            d: 4
+        });
+
+        code(test, {
+            a: 1.12,
+            b: 2.12,
+            c: 3.12,
+            d: 4.12
+        });
+
+
+        code(test, {
             hello: 123,
             foooo: 213,
             'test world': 1245
