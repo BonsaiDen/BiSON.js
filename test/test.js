@@ -41,10 +41,15 @@ var tests = nodeunit.testCase({
             code(test, [64]);
             code(test, [117]);
 
+            code(test, [-0]);
             code(test, [-1]);
             code(test, [-32]);
             code(test, [-64]);
             code(test, [-117]);
+
+            code(test, [0, 1, 1, 1, 0]);
+            code(test, [0, 1, 0, 1, 0]);
+            code(test, [0, 2, 0, 2, 0]);
 
             test.done()
 
@@ -264,6 +269,17 @@ var tests = nodeunit.testCase({
                     o: {}
                 }
             ])
+
+            code(test, [9, {
+                aie: [1,
+                    'foo',
+                    '-----------------------------------------------',
+                5],
+                test: {
+
+                }
+                }
+            ]);
 
             test.done();
 
