@@ -260,6 +260,22 @@ var tests = nodeunit.testCase({
                     { 'foo': 12 }
             ]);
 
+            code(test, [
+                1,
+                50,
+                {
+                    s: [480, 480],
+                    ri: 1,
+                    rt: 177699,
+                    rg: 1,
+                    rs: [],
+                    m: 5,
+                    p: {},
+                    c: {},
+                    o: {}
+                }
+            ])
+
             test.done();
 
         }
