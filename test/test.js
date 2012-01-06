@@ -212,7 +212,6 @@ var tests = nodeunit.testCase({
             d: 4.12
         });
 
-
         code(test, {
             hello: 123,
             foooo: 213,
@@ -253,8 +252,17 @@ var tests = nodeunit.testCase({
 
     },
 
+    'Mixed': nodeunit.testCase({
 
-    'Nested': nodeunit.testCase({
+        nodeGame: function(test) {
+
+            code(test, [
+                    { 'foo': 12 }
+            ]);
+
+            test.done();
+
+        }
 
     })
 
