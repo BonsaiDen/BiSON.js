@@ -31,6 +31,21 @@ function code(test, data) {
 
 var tests = nodeunit.testCase({
 
+    'Simple': function(test) {
+
+        code(test, 0);
+        code(test, 1.23);
+        code(test, 'foo');
+        code(test, false);
+        code(test, true);
+        code(test, null);
+        code(test, []);
+        code(test, {});
+
+        test.done();
+
+    },
+
     'Integer': nodeunit.testCase({
 
         'small': function(test) {
