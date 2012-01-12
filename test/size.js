@@ -3,7 +3,7 @@ var bison = require('../lib/bison');
 function test(data) {
     var enc = bison.encode(data)
 
-    var bl = enc.length,
+    var bl = utf8(enc).length,
         jl = JSON.stringify(data).length;
 
     var ratio = 100 / jl * bl;
