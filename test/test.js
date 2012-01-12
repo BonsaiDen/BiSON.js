@@ -29,6 +29,10 @@ function code(test, data) {
     test.deepEqual(BISON.decode(enc), data);
 }
 
+function string(len) {
+    return new Array(len +1).join('-');
+}
+
 var tests = nodeunit.testCase({
 
     'Simple': function(test) {
@@ -164,21 +168,19 @@ var tests = nodeunit.testCase({
     'String': nodeunit.testCase({
 
         'small': function(test) {
-            code(test, ['Hello World']);
-            code(test, ['Fooooooooooooooooooo.......:::!!!!!!']);
-            code(test, ['                                                  ']);
-            code(test, ['']);
+            code(test, [string(0)]);
+            code(test, [string(1)]);
+            code(test, [string(28)]);
+            code(test, [string(29)]);
             test.done();
         },
 
         'medium': function(test) {
 
-            var str = '-----00000-----------0000--------000000000000-0000000--000000000000-000-----------';
-            for(var i = 0, l = 9; i < l; i++) {
-                str += str;
-            }
+            code(test, [string(30)]);
+            code(test, [string(128)]);
+            code(test, [string(255)]);
 
-//            code(test, [str]);
             test.done();
 
         }

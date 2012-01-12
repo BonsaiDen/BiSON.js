@@ -4,7 +4,7 @@ function test(data) {
     var enc = bison.encode(data)
 
     var bl = utf8(enc).length,
-        jl = JSON.stringify(data).length;
+        jl = utf8(JSON.stringify(data)).length;
 
     var ratio = 100 / jl * bl;
     console.log('JSON:', jl);
@@ -16,23 +16,26 @@ function test(data) {
 function utf8(string) {
     var utftext = "";
 
-    for (var n=0, k=string.length; n < k; n++) {
-        var c = string.charCodeAt(n);
+    for(var n = 0, k = string.length; n < k; n++) {
 
+        var c = string.charCodeAt(n);
         if (c < 128) {
             utftext += String.fromCharCode(c);
-        }
-        else if((c > 127) && (c < 2048)) {
+
+        } else if((c > 127) && (c < 2048)) {
             utftext += String.fromCharCode((c >> 6) | 192);
             utftext += String.fromCharCode((c & 63) | 128);
-        }
-        else {
+
+        } else {
             utftext += String.fromCharCode((c >> 12) | 224);
             utftext += String.fromCharCode(((c >> 6) & 63) | 128);
             utftext += String.fromCharCode((c & 63) | 128);
         }
+
     }
+
     return utftext;
+
 }
 
 test([
