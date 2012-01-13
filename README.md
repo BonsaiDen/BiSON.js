@@ -92,12 +92,13 @@ there are `7` different types in total:
     The stream is padded to the next full **byte** followed by the raw string data.
 
 - `4`:
-    Start of an `Array`, all values until the next `type = 7` are to be 
+    Start of an `Array`, all values until the next `type = 6` are to be 
     appended to this array.
 
 - `5`:
-    Start of an `Object`. Pairs of `String` and a value follow, the string is 
-    to be used as the key in the object to which the value will be associated with.
+    Start of an `Object`. Pairs of `String` and a value follow, until the next `type 6`.
+    The string is to be used as the key in the object to which the value will be 
+    associated with.
 
 - `6`:
     End of the last opened `Array` or `Object`.
@@ -106,6 +107,4 @@ there are `7` different types in total:
 # License
 
 **BiSON** is licenses under MIT.
-
-
 
