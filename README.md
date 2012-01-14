@@ -29,9 +29,9 @@ therefore it is not 100% compatible with JSON.
 - Integers are limited to 32 bits
 
 > **Important:** For reasons of speed, **BiSON** does **not** perform any 
-> validation on the data you pass it.
-> *For example:* Passing Numbers that are not in range will result in invalid 
-> output and result in infinite loops in the worst case.
+> validation on the data you pass it.  
+> *E.g:* Passing Numbers that are not within the valid range will result 
+> in invalid  output and result in infinite loops in the worst case.
 
 
 ## Speed

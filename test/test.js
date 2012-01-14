@@ -183,6 +183,33 @@ var tests = nodeunit.testCase({
 
             test.done();
 
+        },
+
+        'ascii': function(test) {
+
+            var str = '';
+            for(var i = 0, l = 256; i < l; i++) {
+                str += String.fromCharCode(i);
+            }
+
+            code(test, str);
+            test.done();
+
+        },
+
+        // Not a full test but well, sending unicode in game messages
+        // is stupid anyways.
+
+        // Watch out for problems with the WebSocket implementations
+        'unicode': function(test) {
+
+            var str = '';
+            for(var i = 0, l = 65536; i < l; i++) {
+                str += String.fromCharCode(i);
+            }
+
+            code(test, str);
+            test.done();
         }
 
     }),
