@@ -1,4 +1,4 @@
-var bison = require('../lib/bison');
+var BISON = require('../lib/bison');
 
 function time(callback) {
 
@@ -15,8 +15,9 @@ function time(callback) {
 }
 
 function string(len) {
-    return new Array(len +1).join('-');
+    return new Array(len + 1).join('-');
 }
+
 
 var data = {
 
@@ -97,14 +98,34 @@ for(var i in data) {
     console.log('\n' + i + ':');
 
     var value = data[i], count = data[i].length;
-    console.log('  encode:', time(function() {
-        return bison.encode(value);
+    console.log('  encode BISON:', time(function() {
+        return BISON.encode(value);
 
     }) * count);
 
-    var encoded = bison.encode(data[i]);
-    console.log('  decode:', time(function() {
-        return bison.decode(encoded);
+    console.log('stringify JSON:', time(function() {
+        return JSON.stringify(value);
+
     }) * count);
+
+    var encoded = BISON.encode(data[i]);
+    console.log('  decode BISON:', time(function() {
+        return BISON.decode(encoded);
+    }) * count);
+
+    var encoded = JSON.stringify(data[i]);
+    console.log('    parse JSON:', time(function() {
+        return JSON.parse(encoded);
+    }) * count);
+
+
+    var enc = BISON.encode(data[i])
+    var bl = enc.length,
+        jl = JSON.stringify(data[i]).length;
+
+    var ratio = 1 / jl * bl;
+    console.log('      Ratio:', ratio);
 
 }
+
+
