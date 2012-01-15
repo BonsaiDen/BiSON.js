@@ -1,8 +1,8 @@
 Bandwidth optimized binary encoding for JavaScript 
 ==================================================
 
-**BiSON** provides a JSON like encoding for your JavaScript objects but is highly
-focussed on providing a format that is optimized for use with WebSockets and other 
+**BiSON** provides a JSON like encoding for JavaScript objects but focusses
+on providing a format that is optimized for use with WebSockets and other 
 applications where bandwidth is a major concern.
 
 
@@ -46,11 +46,10 @@ The tests can be run with `nodeunit` or in a browser of your choice.
 
 # The Format
 
-**BiSON** uses a bit stream in order to achieve maximum possible compression of 
-the different data types, the format is described below.
+**BiSON** converts all values into a bit stream in order to achieve maximum 
+compression of the different data types, the format is described below.
 
-Each `token` is prepended by a `3 bit` field that determines its `type`, 
-there are `7` different types in total:
+Each `value` is prefixed by a `3 bit` field that determines its `type`:
 
 - `0`: 
     Either a `Boolean`,  `null` or `EOS`, a `2 bit` field with the following 
@@ -92,11 +91,13 @@ there are `7` different types in total:
     The stream is padded to the next full **byte** followed by the raw string data.
 
 - `4`:
-    Start of an `Array`, all values until the next `type = 6` are to be 
+    Start of an `Array`, all values until the next `type #6` are to be 
     appended to this array.
 
 - `5`:
-    Start of an `Object`. Pairs of `String` and a value follow, until the next `type 6`.
+    Start of an `Object`. Pairs of `String` and a value follow, until the next 
+    `type #6`.
+
     The string is to be used as the key in the object to which the value will be 
     associated with.
 

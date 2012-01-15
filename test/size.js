@@ -1,9 +1,9 @@
 var bison = require('../lib/bison');
 
 function test(data) {
-    var enc = bison.encode(data)
 
-    var bl = utf8(enc).length,
+    var enc = bison.encode(data),
+        bl = utf8(enc).length,
         jl = JSON.stringify(data).length;
 
     var ratio = 100 / jl * bl;
@@ -11,7 +11,7 @@ function test(data) {
     console.log('BiSON:', bl);
     console.log('Ratio:', ratio);
 
-};
+}
 
 function utf8(string) {
     var utftext = "";

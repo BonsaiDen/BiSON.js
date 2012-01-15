@@ -70,7 +70,7 @@ var tests = nodeunit.testCase({
             code(test, [0, 1, 0, 1, 0]);
             code(test, [0, 2, 0, 2, 0]);
 
-            test.done()
+            test.done();
 
         },
 
@@ -86,7 +86,7 @@ var tests = nodeunit.testCase({
             code(test, [-1024]);
             code(test, [-65535]);
 
-            test.done()
+            test.done();
 
         },
 
@@ -102,7 +102,7 @@ var tests = nodeunit.testCase({
             code(test, [-1010123024]);
             code(test, [-2147483647]);
 
-            test.done()
+            test.done();
 
         }
 
@@ -127,7 +127,7 @@ var tests = nodeunit.testCase({
             code(test, [-64.171]);
             code(test, [-117.123912]);
 
-            test.done()
+            test.done();
 
         },
 
@@ -143,7 +143,7 @@ var tests = nodeunit.testCase({
             code(test, [-1024.001]);
             code(test, [-65535.01]);
 
-            test.done()
+            test.done();
 
         },
 
@@ -159,7 +159,7 @@ var tests = nodeunit.testCase({
             code(test, [-1010123024]);
             code(test, [-2147483647]);
 
-            test.done()
+            test.done();
 
         }
 
@@ -299,6 +299,7 @@ var tests = nodeunit.testCase({
             ]);
 
             code(test, [
+
                 1,
                 50,
                 {
@@ -312,7 +313,8 @@ var tests = nodeunit.testCase({
                     c: {},
                     o: {}
                 }
-            ])
+
+            ]);
 
             code(test, [9, {
                 aie: [1,

@@ -2,7 +2,7 @@ var BISON = require('../lib/bison');
 
 function time(callback) {
 
-    var cur = start = Date.now(),
+    var start = Date.now(),
         count = 0, d;
 
     while(Date.now() < start + 333) {
@@ -37,7 +37,7 @@ var data = {
         -2501,
         -47123,
         -213123,
-        -2147483647,
+        -2147483647
     ],
 
     floats: [
@@ -119,8 +119,8 @@ for(var i in data) {
     }) * count);
 
 
-    var enc = BISON.encode(data[i])
-    var bl = enc.length,
+    var enc = BISON.encode(data[i]),
+        bl = enc.length,
         jl = JSON.stringify(data[i]).length;
 
     var ratio = 1 / jl * bl;
