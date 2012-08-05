@@ -37,7 +37,8 @@ therefore it is not 100% compatible with JSON.
 ## Speed
 
 Only half as fast as recent *native* JSON implementations, but that's still 
-fast enough, you want to send as little data over the network anyways.
+fast enough, as reducing the amount of data being transmitted will save the most 
+time over a TCP connection.
 
 
 # Tests
@@ -52,13 +53,10 @@ compression of the different data types, the format is described below.
 Each `value` is prefixed by a `3 bit` field that determines its `type`:
 
 - `0`: 
-    Either a `Boolean`,  `null` or `EOS`, a `2 bit` field with the following 
-    values follows:
+    A `Boolean`, a `2 bit` field with the value follows:
 
 	- `0` = `false` 
 	- `1` = `true` 
-	- `2` = `null` 
-	- `3` = End of Stream
 
 - `1`: 
     A `Integer` in the range of `-2147483648` to `+2147483648`, a `3 bit` field
@@ -103,6 +101,12 @@ Each `value` is prefixed by a `3 bit` field that determines its `type`:
 
 - `6`:
     End of the last opened `Array` or `Object`.
+
+- `7`
+    Either `null` or `EOS`, a `1 bit` field with the values follows:
+
+	- `0` = `null` 
+	- `1` = End of Stream
 
 
 # License
