@@ -53,7 +53,7 @@ compression of the different data types, the format is described below.
 Each `value` is prefixed by a `3 bit` field that determines its `type`:
 
 - `0`: 
-    A `Boolean`, a `2 bit` field with the value follows:
+    A `Boolean`, a `1 bit` field with the value follows:
 
 	- `0` = `false` 
 	- `1` = `true` 
