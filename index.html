@@ -1,0 +1,175 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>BiSON.js by BonsaiDen</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">BiSON.js</h1>
+        <p class="header">Bandwidth optimized binary encoding for JavaScript </p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/BonsaiDen/BiSON.js/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/BonsaiDen/BiSON.js/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/BonsaiDen/BiSON.js">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/BonsaiDen">BonsaiDen</a></p>
+
+
+      </header>
+      <section>
+        <h1>Bandwidth optimized binary encoding for JavaScript </h1>
+
+<p><strong>BiSON</strong> provides a JSON like encoding for JavaScript objects but focusses
+on providing a format that is optimized for use with WebSockets and other 
+applications where bandwidth is a major concern.</p>
+
+<h2>Usage</h2>
+
+<p>The Library exports a <code>encode</code> and a <code>decode</code> method on either the global <code>BISON</code> 
+object in the Browser or on the module when used under Node.js.</p>
+
+<pre><code>// Encoding and decoding a Object
+BISON.decode(BISON.encode({ key: 'value' })) // { key: 'value' }
+</code></pre>
+
+<h1>Pro and Contra</h1>
+
+<p>BiSON <strong>saves</strong> between <strong>30 to 55 percent</strong> of size when compared to <strong>JSON</strong>. 
+With the average saving being around <strong>45 percent</strong>.
+In order to achieve a maximum of compression BiSON makes some trade offs, 
+therefore it is not 100% compatible with JSON.</p>
+
+<h2>Encoding Limits</h2>
+
+<ul>
+<li>Floats are single precision</li>
+<li>Integers are limited to 32 bits</li>
+</ul><blockquote>
+<p><strong>Important:</strong> For reasons of speed, <strong>BiSON</strong> does <strong>not</strong> perform any 
+validation on the data you pass it.<br><em>E.g:</em> Passing Numbers that are not within the valid range will result 
+in invalid  output and result in infinite loops in the worst case.</p>
+</blockquote>
+
+<h2>Speed</h2>
+
+<p>Only half as fast as recent <em>native</em> JSON implementations, but that's still 
+fast enough, as reducing the amount of data being transmitted will save the most 
+time over a TCP connection.</p>
+
+<h1>Tests</h1>
+
+<p>The tests can be run with <code>nodeunit</code> or in a browser of your choice.</p>
+
+<h1>The Format</h1>
+
+<p><strong>BiSON</strong> converts all values into a bit stream in order to achieve maximum 
+compression of the different data types, the format is described below.</p>
+
+<p>Each <code>value</code> is prefixed by a <code>3 bit</code> field that determines its <code>type</code>:</p>
+
+<ul>
+<li>
+<p><code>0</code>: 
+A <code>Boolean</code>, a <code>1 bit</code> field with the value follows:</p>
+
+<ul>
+<li>
+<code>0</code> = <code>false</code> </li>
+<li>
+<code>1</code> = <code>true</code> </li>
+</ul>
+</li>
+<li>
+<p><code>1</code>: 
+A <code>Integer</code> in the range of <code>-2147483648</code> to <code>+2147483648</code>, a <code>3 bit</code> field
+follows that contains the number of bits that make up the actual value:</p>
+
+<ul>
+<li>
+<code>0</code> = <code>1 bit</code> </li>
+<li>
+<code>1</code> = <code>4 bits</code> </li>
+<li>
+<code>2</code> = <code>8 bits</code> </li>
+<li>
+<code>3</code> = <code>12 bits</code> </li>
+<li>
+<code>4</code> = <code>16 bits</code> </li>
+<li>
+<code>5</code> = <code>20 bits</code> </li>
+<li>
+<code>6</code> = <code>24 bits</code> </li>
+<li>
+<code>7</code> = <code>32 bits</code> </li>
+</ul>
+<p>After the above number of bits, a <code>1 bit</code> field follows containing the <code>sign</code>.</p>
+</li>
+<li><p><code>2</code>:
+A single percision <code>Float</code>, same data as the <code>Integer</code> but with an additional
+<code>4 bit</code> field at the end containing the number of decimal places the value needs
+to be shifted to the right.</p></li>
+<li>
+<p><code>3</code>:
+A <code>String</code>, a <code>3 bit</code> field with the following values:</p>
+
+<ul>
+<li>
+<code>&lt;= 28</code> = The length in bytes.</li>
+<li>
+<code>29</code> = A <code>8 bit</code> field follows containing the length in bytes.</li>
+<li>
+<code>30</code> = A <code>16 bit</code> field follows containing the length in bytes.</li>
+<li>
+<code>31</code> = A <code>32 bit</code> field follows containing the length in bytes.</li>
+</ul>
+<p>The stream is padded to the next full <strong>byte</strong> followed by the raw string data.</p>
+</li>
+<li><p><code>4</code>:
+Start of an <code>Array</code>, all values until the next <code>type #6</code> are to be 
+appended to this array.</p></li>
+<li>
+<p><code>5</code>:
+Start of an <code>Object</code>. Pairs of <code>String</code> and a value follow, until the next 
+<code>type #6</code>.</p>
+
+<p>The string is to be used as the key in the object to which the value will be 
+associated with.</p>
+</li>
+<li><p><code>6</code>:
+End of the last opened <code>Array</code> or <code>Object</code>.</p></li>
+<li>
+<p><code>7</code>
+Either <code>null</code> or <code>EOS</code>, a <code>1 bit</code> field with the values follows:</p>
+
+<ul>
+<li>
+<code>0</code> = <code>null</code> </li>
+<li>
+<code>1</code> = End of Stream</li>
+</ul>
+</li>
+</ul><h1>License</h1>
+
+<p><strong>BiSON</strong> is licenses under MIT.</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+		
+  </body>
+</html>
