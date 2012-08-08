@@ -117,7 +117,10 @@ var tests = nodeunit.testCase({
             code(test, [1.16]);
             code(test, [32.045]);
             code(test, [64.171]);
+            code(test, [134.125634]);
             code(test, [117.123912]);
+            code(test, [11.1239121]);
+            code(test, [0.12391213]);
 
             code(test, [-0]);
             code(test, [-1.15]);
@@ -125,7 +128,10 @@ var tests = nodeunit.testCase({
             code(test, [-1.123]);
             code(test, [-32.045]);
             code(test, [-64.171]);
+            code(test, [-134.125634]);
             code(test, [-117.123912]);
+            code(test, [-11.1239121]);
+            code(test, [-0.12391213]);
 
             test.done();
 

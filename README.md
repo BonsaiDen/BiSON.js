@@ -36,9 +36,9 @@ therefore it is not 100% compatible with JSON.
 
 ## Speed
 
-Only half as fast as recent *native* JSON implementations, but that's still 
-fast enough, as reducing the amount of data being transmitted will save the most 
-time over a TCP connection.
+Depends on the data being encoded and the JavaScript engine being used.
+
+On chrome performance ranges from `x0.5` to ` x2` the speed of JSON. With string serialization being `x100` faster.
 
 
 # Tests
