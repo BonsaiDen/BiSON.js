@@ -1,6 +1,6 @@
 {
 
-    "name": "bison",
+    "name": "bisonjs",
     "version": "2.0.0",
     "description": "Bandwidth optimized binary encoding for JavaScript.",
     "homepage": "https://github.com/BonsaiDen/BiSON.js",
@@ -12,8 +12,8 @@
     ],
     
     "engines" : {
-        "node": "0.4 || 0.5 || 0.6",
-        "npm": "1"
+        "node": ">=0.8",
+        "npm": ">=1"
     },
     
     "main": "lib/bison",
