@@ -337,6 +337,19 @@ var tests = nodeunit.testCase({
 
         }
 
+    }),
+
+    'Decode Protections': nodeunit.testCase({
+        overflow: function(test) {
+
+            var enc = BISON.encode([0, 1383759286507]),
+                dec = BISON.decode(enc);
+
+            test.strictEqual(dec, undefined, 'Invalid stream returns undefined');
+            test.done();
+
+        }
+
     })
 
 });

@@ -30,8 +30,9 @@ therefore it is not 100% compatible with JSON.
 
 > **Important:** For reasons of speed, **BiSON** does **not** perform any 
 > validation on the data you pass it.  
+
 > *E.g:* Passing Numbers that are not within the valid range will result 
-> in invalid  output and result in infinite loops in the worst case.
+> in non matching output.
 
 
 ## Speed
@@ -107,6 +108,7 @@ Each `value` is prefixed by a `3 bit` field that determines its `type`:
 
 	- `0` = `null` 
 	- `1` = End of Stream
+    - `7` = Invalid Stream
 
 
 # License
