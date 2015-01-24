@@ -1,7 +1,7 @@
 {
 
     "name": "bisonjs",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "Bandwidth optimized binary encoding for JavaScript.",
     "homepage": "https://github.com/BonsaiDen/BiSON.js",
     "author": "Ivo Wetzel <ivo.wetzel@googlemail.com>",

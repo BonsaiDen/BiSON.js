@@ -24,9 +24,16 @@ if (typeof window === 'undefined') {
     var nodeunit = require('nodeunit');
 }
 
-function code(test, data) {
-    var enc = BISON.encode(data);
-    test.deepEqual(BISON.decode(enc), data);
+function code(test, data, expected) {
+    var enc = BISON.encode(data),
+        dec = BISON.decode(enc);
+
+    if (dec === undefined) {
+        throw new Error('Failed to decode');
+
+    } else {
+        test.deepEqual(dec, expected || data);
+    }
 }
 
 function string(len) {
@@ -132,7 +139,7 @@ var tests = nodeunit.testCase({
             code(test, [-117.123912]);
             code(test, [-11.1239121]);
             code(test, [-0.12391213]);
-
+            code(test, [170.99999999999997], [170.9999999]);
             test.done();
 
         },
